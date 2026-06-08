@@ -1,0 +1,6 @@
+install.packages("dplyr")
+install.packages("ggplot2")
+install.packages("readxl")
+install.packages("class")
+install.packages("caret")
+install.packages("factoextra")
