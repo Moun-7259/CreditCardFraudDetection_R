@@ -1,36 +1,65 @@
-# ==========================
-# KNN FRAUD DETECTION
-# ==========================
+# =====================================================
+# CREDIT CARD FRAUD DETECTION USING KNN
+# =====================================================
 
+# Load required libraries
 library(class)
 library(caret)
 
-# Read Dataset
-data <- read.csv("data/creditcard.csv")
+# ----------------------------
+# Load Dataset
+# ----------------------------
 
-# Use smaller sample for faster execution
+credit_data <- read.csv("data/creditcard.csv")
+
+cat("Dataset Loaded Successfully!\n")
+cat("Number of Rows :", nrow(credit_data), "\n")
+cat("Number of Columns :", ncol(credit_data), "\n\n")
+
+# ----------------------------
+# Take a Sample (5000 records)
+# ----------------------------
+
 set.seed(123)
 
-sample_data <- data[sample(nrow(data), 5000), ]
+sample_data <- credit_data[sample(nrow(credit_data), 5000), ]
 
-# Features
-x <- sample_data[, c("Time", "Amount")]
+# ----------------------------
+# Convert Class to Factor
+# ----------------------------
 
-# Target
-y <- as.factor(sample_data$Class)
+sample_data$Class <- as.factor(sample_data$Class)
 
-# Normalize Features
-normalize <- function(x)
-{
-  (x - min(x)) / (max(x) - min(x))
+# ----------------------------
+# Select Features
+# (Exclude only Class column)
+# ----------------------------
+
+x <- sample_data[, names(sample_data) != "Class"]
+
+# Target Variable
+
+y <- sample_data$Class
+
+# ----------------------------
+# Normalize Data
+# ----------------------------
+
+normalize <- function(z) {
+  (z - min(z)) / (max(z) - min(z))
 }
 
 x <- as.data.frame(lapply(x, normalize))
 
-# Split Data
+# ----------------------------
+# Split Train and Test Data
+# ----------------------------
+
+set.seed(123)
+
 train_index <- createDataPartition(
   y,
-  p = 0.7,
+  p = 0.70,
   list = FALSE
 )
 
@@ -40,18 +69,34 @@ test_x <- x[-train_index, ]
 train_y <- y[train_index]
 test_y <- y[-train_index]
 
-# KNN Model
-pred <- knn(
+# ----------------------------
+# Apply KNN Algorithm
+# ----------------------------
+
+predictions <- knn(
   train = train_x,
   test = test_x,
   cl = train_y,
   k = 5
 )
 
-# Confusion Matrix
+# ----------------------------
+# Display Results
+# ----------------------------
+
 result <- confusionMatrix(
-  pred,
+  predictions,
   test_y
 )
 
+cat("\n=====================================\n")
+cat("KNN MODEL RESULTS\n")
+cat("=====================================\n\n")
+
 print(result)
+
+cat("\nOverall Accuracy : ",
+    round(result$overall["Accuracy"] * 100, 2),
+    "%\n")
+
+cat("\nFinished Successfully!\n")

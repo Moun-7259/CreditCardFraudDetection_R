@@ -1,55 +1,88 @@
-# ==========================
-# OUTLIER DETECTION
-# ==========================
+# =====================================================
+# CREDIT CARD FRAUD DETECTION
+# OUTLIER DETECTION USING IQR METHOD
+# =====================================================
 
-data <- read.csv("data/creditcard.csv")
+# -----------------------------
+# Load Dataset
+# -----------------------------
 
-cat("===== OUTLIER DETECTION =====\n\n")
+credit_data <- read.csv("data/creditcard.csv")
 
-# Using Amount column
+cat("=====================================\n")
+cat("OUTLIER DETECTION\n")
+cat("=====================================\n\n")
 
-Q1 <- quantile(data$Amount, 0.25)
-Q3 <- quantile(data$Amount, 0.75)
+# -----------------------------
+# Calculate Quartiles
+# -----------------------------
 
-IQR_value <- IQR(data$Amount)
+Q1 <- quantile(credit_data$Amount, 0.25)
+Q3 <- quantile(credit_data$Amount, 0.75)
 
-lower_bound <- Q1 - 1.5 * IQR_value
-upper_bound <- Q3 + 1.5 * IQR_value
+IQR_value <- IQR(credit_data$Amount)
+
+# -----------------------------
+# Calculate Bounds
+# -----------------------------
+
+lower_bound <- Q1 - (1.5 * IQR_value)
+upper_bound <- Q3 + (1.5 * IQR_value)
+
+cat("First Quartile (Q1):", Q1, "\n")
+cat("Third Quartile (Q3):", Q3, "\n")
+cat("Interquartile Range (IQR):", IQR_value, "\n\n")
 
 cat("Lower Bound:", lower_bound, "\n")
-cat("Upper Bound:", upper_bound, "\n")
+cat("Upper Bound:", upper_bound, "\n\n")
 
+# -----------------------------
 # Detect Outliers
-outliers <- data[
-  data$Amount < lower_bound |
-  data$Amount > upper_bound,
+# -----------------------------
+
+outliers <- credit_data[
+  credit_data$Amount < lower_bound |
+  credit_data$Amount > upper_bound,
 ]
 
-cat("\nNumber of Outliers:\n")
+cat("Number of Outliers Found:\n")
 print(nrow(outliers))
 
+# -----------------------------
 # Remove Outliers
-clean_data <- data[
-  data$Amount >= lower_bound &
-  data$Amount <= upper_bound,
+# -----------------------------
+
+clean_data <- credit_data[
+  credit_data$Amount >= lower_bound &
+  credit_data$Amount <= upper_bound,
 ]
+
+cat("\nDataset Size Before Removing Outliers:\n")
+print(dim(credit_data))
 
 cat("\nDataset Size After Removing Outliers:\n")
 print(dim(clean_data))
 
+# -----------------------------
 # Save Boxplot
+# -----------------------------
+
 png(
-  "output/outlier_boxplot.png",
+  filename = "output/outlier_boxplot.png",
   width = 1000,
   height = 600
 )
 
 boxplot(
-  data$Amount,
-  main = "Outlier Detection using Boxplot",
-  ylab = "Amount"
+  credit_data$Amount,
+  main = "Outlier Detection Using Boxplot",
+  ylab = "Transaction Amount",
+  col = "lightblue"
 )
 
 dev.off()
 
-cat("\nBoxplot saved in output folder\n")
+cat("\nBoxplot saved successfully.\n")
+cat("Location: output/outlier_boxplot.png\n")
+
+cat("\nOutlier Detection Completed Successfully!\n")

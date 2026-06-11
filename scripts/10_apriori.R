@@ -1,45 +1,90 @@
-# ==========================
+# =====================================================
+# CREDIT CARD FRAUD DETECTION
 # APRIORI ALGORITHM
-# ==========================
+# =====================================================
 
+# Load required library
 library(arules)
 
-# Sample Transactions
+# -----------------------------
+# Load Dataset
+# -----------------------------
 
-transactions <- list(
-  c("Milk", "Bread", "Butter"),
-  c("Milk", "Bread"),
-  c("Bread", "Butter"),
-  c("Milk", "Butter"),
-  c("Milk", "Bread", "Butter", "Eggs"),
-  c("Bread", "Eggs"),
-  c("Milk", "Eggs"),
-  c("Bread", "Butter", "Eggs")
+credit_data <- read.csv("data/creditcard.csv")
+
+cat("=====================================\n")
+cat("APRIORI ALGORITHM\n")
+cat("=====================================\n\n")
+
+# -----------------------------
+# Take a Sample
+# -----------------------------
+
+set.seed(123)
+
+sample_data <- credit_data[sample(nrow(credit_data), 1000), ]
+
+# -----------------------------
+# Convert Amount into Categories
+# -----------------------------
+
+sample_data$Amount_Category <- ifelse(
+  sample_data$Amount > median(sample_data$Amount),
+  "HighAmount",
+  "LowAmount"
 )
 
-# Convert to Transactions
-trans <- as(
-  transactions,
+# -----------------------------
+# Convert Class into Labels
+# -----------------------------
+
+sample_data$Transaction_Type <- ifelse(
+  sample_data$Class == 1,
+  "Fraud",
+  "Normal"
+)
+
+# -----------------------------
+# Create Transaction Data
+# -----------------------------
+
+transaction_list <- apply(
+  sample_data[, c("Amount_Category", "Transaction_Type")],
+  1,
+  function(x) as.character(x)
+)
+
+transactions <- as(
+  transaction_list,
   "transactions"
 )
 
-# Apply Apriori
+# -----------------------------
+# Apply Apriori Algorithm
+# -----------------------------
+
 rules <- apriori(
-  trans,
+  transactions,
   parameter = list(
-    supp = 0.2,
-    conf = 0.5
+    supp = 0.10,
+    conf = 0.50
   )
 )
 
-cat("===== ASSOCIATION RULES =====\n\n")
+cat("Association Rules Generated:\n\n")
 
 inspect(rules)
 
-# Save Rules
+# -----------------------------
+# Save Rules to File
+# -----------------------------
+
 capture.output(
   inspect(rules),
   file = "output/apriori_rules.txt"
 )
 
-cat("\nApriori rules saved in output folder\n")
+cat("\nAssociation rules saved successfully.\n")
+cat("Location: output/apriori_rules.txt\n")
+
+cat("\nApriori Algorithm Completed Successfully!\n")

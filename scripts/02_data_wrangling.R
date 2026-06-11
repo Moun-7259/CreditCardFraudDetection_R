@@ -1,28 +1,80 @@
+# =====================================================
+# CREDIT CARD FRAUD DETECTION
+# DATA WRANGLING
+# =====================================================
+
+# Load required library
 library(dplyr)
 
-data <- read.csv("data/creditcard.csv")
+# -----------------------------
+# Read Dataset
+# -----------------------------
 
-cat("Original Dataset Size:\n")
-print(dim(data))
+credit_data <- read.csv("data/creditcard.csv")
 
-selected_data <- data %>%
+cat("=====================================\n")
+cat("DATA WRANGLING\n")
+cat("=====================================\n\n")
+
+# -----------------------------
+# Original Dataset Size
+# -----------------------------
+
+cat("Original Dataset Dimensions:\n")
+print(dim(credit_data))
+
+# -----------------------------
+# Check Missing Values
+# -----------------------------
+
+cat("\nMissing Values in Each Column:\n")
+print(colSums(is.na(credit_data)))
+
+# -----------------------------
+# Select Required Columns
+# -----------------------------
+
+selected_data <- credit_data %>%
   select(Time, Amount, Class)
 
-cat("\nSelected Columns:\n")
+cat("\nSelected Columns Preview:\n")
 print(head(selected_data))
 
-high_amount <- data %>%
+# -----------------------------
+# Filter High Amount Transactions
+# -----------------------------
+
+high_amount <- credit_data %>%
   filter(Amount > 1000)
 
-cat("\nTransactions Above 1000:\n")
+cat("\nNumber of Transactions Above 1000:\n")
 print(nrow(high_amount))
 
-data <- data %>%
+# -----------------------------
+# Create New Column
+# -----------------------------
+
+credit_data <- credit_data %>%
   mutate(
-    TransactionType = ifelse(Class == 1,
-                             "Fraud",
-                             "Normal")
+    TransactionType = ifelse(
+      Class == 1,
+      "Fraud",
+      "Normal"
+    )
   )
 
-cat("\nNew Column Added:\n")
-print(head(data[, c("Amount","Class","TransactionType")]))
+cat("\nNew Column Added Successfully:\n")
+print(head(
+  credit_data[, c("Amount", "Class", "TransactionType")]
+))
+
+# -----------------------------
+# Remove Duplicate Records
+# -----------------------------
+
+credit_data <- distinct(credit_data)
+
+cat("\nDataset Size After Removing Duplicates:\n")
+print(dim(credit_data))
+
+cat("\nData Wrangling Completed Successfully!\n")

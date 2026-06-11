@@ -1,40 +1,77 @@
-# ==========================
-# K-MEANS CLUSTERING
-# ==========================
+# =====================================================
+# CREDIT CARD FRAUD DETECTION USING K-MEANS CLUSTERING
+# =====================================================
 
+# Load required library
 library(factoextra)
 
-data <- read.csv("data/creditcard.csv")
+# -----------------------------
+# Load Dataset
+# -----------------------------
 
-# Select features
-cluster_data <- data[, c("Time", "Amount")]
+credit_data <- read.csv("data/creditcard.csv")
 
-# Normalize
+cat("=====================================\n")
+cat("K-MEANS CLUSTERING\n")
+cat("=====================================\n\n")
+
+# -----------------------------
+# Select Features for Clustering
+# -----------------------------
+
+cluster_data <- credit_data[, c("Time", "Amount")]
+
+# -----------------------------
+# Normalize the Data
+# -----------------------------
+
 cluster_data <- scale(cluster_data)
 
-# K-Means
+cat("Data Normalized Successfully.\n\n")
+
+# -----------------------------
+# Apply K-Means Algorithm
+# -----------------------------
+
 set.seed(123)
 
 kmeans_result <- kmeans(
-  cluster_data,
+  x = cluster_data,
   centers = 3,
   nstart = 20
 )
 
-print(kmeans_result)
+# -----------------------------
+# Print Results
+# -----------------------------
 
-# Save Cluster Plot
+cat("Cluster Centers:\n")
+print(kmeans_result$centers)
+
+cat("\nNumber of Observations in Each Cluster:\n")
+print(kmeans_result$size)
+
+cat("\nTotal Within-Cluster Sum of Squares:\n")
+print(kmeans_result$tot.withinss)
+
+# -----------------------------
+# Save Cluster Visualization
+# -----------------------------
+
 png(
-  "output/kmeans_clusters.png",
+  filename = "output/kmeans_clusters.png",
   width = 1000,
   height = 600
 )
 
 fviz_cluster(
-  kmeans_result,
-  data = cluster_data
+  object = kmeans_result,
+  data = cluster_data,
+  geom = "point"
 )
 
 dev.off()
 
-cat("K-Means cluster plot saved in output folder\n")
+cat("\nCluster plot saved successfully.\n")
+cat("Location: output/kmeans_clusters.png\n")
+cat("\nK-Means Clustering Completed Successfully!\n")
