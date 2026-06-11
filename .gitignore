@@ -1,0 +1,10 @@
+# Ignore dataset folder
+data/
+
+# R session files
+.Rhistory
+.RData
+.Rproj.user/
+
+# Ignore generated images (optional)
+output/*.png
