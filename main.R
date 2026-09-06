@@ -15,7 +15,7 @@ cat("\n-------------------------------------\n")
 
 source("scripts/02_data_wrangling.R")
 
-cat("\n-------------------------------------\n")
+cat("\n-----------------------------------\n")
 
 source("scripts/03_descriptive_statistics.R")
 
