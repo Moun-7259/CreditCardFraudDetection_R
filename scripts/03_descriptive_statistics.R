@@ -60,7 +60,7 @@ print(min(credit_data$Amount))
 # -----------------------------
 
 cat("\nMaximum Amount:\n")
-print(max(credit_data$Amount))
+print(max(credit_data&Amount))
 
 # -----------------------------
 # Variance
