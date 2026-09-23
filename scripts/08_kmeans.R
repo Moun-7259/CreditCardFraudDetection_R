@@ -2,7 +2,7 @@
 # CREDIT CARD FRAUD DETECTION USING K-MEANS CLUSTERING
 # =====================================================
 
-# Load required library
+# load required libraries
 library(factoextra)
 
 # -----------------------------
